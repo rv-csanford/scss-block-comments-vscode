@@ -11,16 +11,42 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.formatScssBlocks"
+        "onLanguage:scss"
     ],
     "main": "./extension",
     "contributes": {
-        "commands": [
+        "languages": [
             {
-                "command": "extension.formatScssBlocks",
-                "title": "Comment SCSS Blocks"
+                "id": "scss",
+                "aliases": [
+                    "scss"
+                ],
+                "extensions": [
+                    "scss"
+                ]
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "SCSS Blocks Config",
+            "properties": {
+                "scss.format.enable":{
+                    "type": "boolean",
+                    "default": false,
+                    "description": ""
+                },
+                "conf.verboseSelectors": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Concatenate '&' nested selectors for the end-of-block comment"
+                },
+                "conf.excludeMediaQueries": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": ""
+                }
+            }
+        }
     },
     "scripts": {
         "postinstall": "node ./node_modules/vscode/bin/install",

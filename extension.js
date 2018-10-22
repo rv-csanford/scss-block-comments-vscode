@@ -13,63 +13,84 @@ function activate(context) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.formatScssBlocks', function () {
-        let editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            return; // No open text editor
-        }
+    vscode.languages.registerDocumentFormattingEditProvider('scss', {
+        provideDocumentFormattingEdits(document) {
 
-        let lineCount = editor.document.lineCount;
+            // let editor = vscode.window.activeTextEditor;
+            // if (!editor) {
+            //     return; // No open text editor
+            // }
 
-        let selector = '';
-        let selectors = [];
-        let concatSelector = '';
-        let line = '';
-        let edits = [];
-        let edit = new vscode.WorkspaceEdit();
-        let range = null;
+            let lineCount = document.lineCount;
+            let selector = '';
+            let selectors = [];
+            let cleanedSelectors = [];
+            let concatSelector = '';
+            let line = '';
+            let edits = [];
+            let edit = new vscode.WorkspaceEdit();
+            let range = null;
 
-        for (let i=0; i < lineCount; i++) {
-            line = editor.document.lineAt(i).text;
+            let config = {
+                verboseSelectors: vscode.workspace.getConfiguration().get('conf.verboseSelectors')
+            };
+            console.log('config: ', config);
 
-            if (line.indexOf('{') != -1) {
-                selector = line.slice(0, line.indexOf('{')).trim();
-                selectors.push(selector)
-            }
 
-            if (line.indexOf('}') != -1) {
-                range = new vscode.Range( editor.document.lineAt(i).range.start,  editor.document.lineAt(i).range.end);
+            for (let i=0; i < lineCount; i++) {
+                // iterate over each line
+                line = document.lineAt(i).text;
 
-                // if at the end of a block with an & selector
-                if (selectors[selectors.length-1].slice(0, 1) === '&') {
-                    for (let k = 0; k < selectors.length; k++)  {
-                        selectors[k] = selectors[k].replace('&', '');
+                if (line.indexOf('{') != -1) {
+                    // trim selector and add to array of selectors
+                    selector = line.slice(0, line.indexOf('{')).trim();
+                    selectors.push(selector)
+                }
+
+                if (line.indexOf('}') != -1) {
+                    range = new vscode.Range( document.lineAt(i).range.start,  document.lineAt(i).range.end);
+
+                    // if you have verbose selectors enabled in settings
+                    if(config.verboseSelectors) {
+                        // if at the end of a block with an & selector
+                        if (selectors[selectors.length-1].slice(0, 1) === '&') {
+                            // strip '&' and concatenate selectors
+                            cleanedSelectors = [];
+                            for (let k = 0; k < selectors.length; k++)  {
+                                cleanedSelectors.push(selectors[k].replace('&', ''));
+                            }
+                            concatSelector = cleanedSelectors.join('');
+
+                            // create comment edit
+                            edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '//' + concatSelector));
+                        } else {
+                            // create comment edit
+                            edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '//' + selectors[selectors.length-1]));
+                        }
+                    } else {
+                        // create comment edit
+                        edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '//' + selectors[selectors.length-1]));
                     }
-                    console.log(selectors);
-                    concatSelector = selectors.join('');
-                    console.log(concatSelector);
-                    edit.replace(editor.document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '//' + concatSelector));
-                } else {
-                    edit.replace(editor.document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '//' + selectors[selectors.length-1]));
+
+                    // remove last selector in stack
+                    selectors.pop();
+                    // push edit to array
+                    edits.push(edit);
                 }
-                selectors.splice(-1,1)
-                edits.push(edit);
+            }
+
+            // apply edits
+            for (let j = 0; j < edits.length; j++) {
+                vscode.workspace.applyEdit(edits[j]).then(success => {
+                    if (success) {
+                    } else {
+                    }
+                });
             }
         }
-
-        for (let j = 0; j < edits.length; j++) {
-            vscode.workspace.applyEdit(edits[j]).then(success => {
-                if (success) {
-                } else {
-                }
-            });
-        }
-
-
-        // vscode.window.showInformationMessage(openBrackets);
     });
 
-    context.subscriptions.push(disposable);
+    //context.subscriptions.push(disposable);
 }
 exports.activate = activate;
 
