@@ -18,6 +18,10 @@ body.is-custom {
   .h-desktop-only {
     @media screen and (max-width: 991px) {
       display: none !important;
+
+      .pdp-header {
+
+      }
     }
   }
 

@@ -32,7 +32,7 @@
             "properties": {
                 "scss.format.enable":{
                     "type": "boolean",
-                    "default": false,
+                    "default": true,
                     "description": ""
                 },
                 "conf.verboseSelectors": {
@@ -40,10 +40,10 @@
                     "default": true,
                     "description": "Concatenate '&' nested selectors for the end-of-block comment"
                 },
-                "conf.excludeMediaQueries": {
+                "conf.includeMediaQueries": {
                     "type": "boolean",
-                    "default": true,
-                    "description": ""
+                    "default": false,
+                    "description": "Include media query comments"
                 }
             }
         }

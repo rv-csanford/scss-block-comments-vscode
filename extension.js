@@ -1,26 +1,11 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+// this method is called when the extension is activated
 function activate(context) {
-
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "scss-block-comments" is now active!');
 
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
     vscode.languages.registerDocumentFormattingEditProvider('scss', {
         provideDocumentFormattingEdits(document) {
-
-            // let editor = vscode.window.activeTextEditor;
-            // if (!editor) {
-            //     return; // No open text editor
-            // }
-
             let lineCount = document.lineCount;
             let selector = '';
             let selectors = [];
@@ -30,12 +15,10 @@ function activate(context) {
             let edits = [];
             let edit = new vscode.WorkspaceEdit();
             let range = null;
-
             let config = {
-                verboseSelectors: vscode.workspace.getConfiguration().get('conf.verboseSelectors')
+                verboseSelectors: vscode.workspace.getConfiguration().get('conf.verboseSelectors'),
+                includeMediaQueries: vscode.workspace.getConfiguration().get('conf.includeMediaQueries')
             };
-            console.log('config: ', config);
-
 
             for (let i=0; i < lineCount; i++) {
                 // iterate over each line
@@ -44,14 +27,14 @@ function activate(context) {
                 if (line.indexOf('{') != -1) {
                     // trim selector and add to array of selectors
                     selector = line.slice(0, line.indexOf('{')).trim();
-                    selectors.push(selector)
+                    selectors.push(selector);
                 }
 
                 if (line.indexOf('}') != -1) {
                     range = new vscode.Range( document.lineAt(i).range.start,  document.lineAt(i).range.end);
 
                     // if you have verbose selectors enabled in settings
-                    if(config.verboseSelectors) {
+                    if (config.verboseSelectors) {
                         // if at the end of a block with an & selector
                         if (selectors[selectors.length-1].slice(0, 1) === '&') {
                             // strip '&' and concatenate selectors
@@ -62,16 +45,41 @@ function activate(context) {
                             concatSelector = cleanedSelectors.join('');
 
                             // create comment edit
-                            edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '//' + concatSelector));
+                            edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '// ' + concatSelector));
                         } else {
-                            // create comment edit
-                            edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '//' + selectors[selectors.length-1]));
+                            if (selectors[selectors.length-1].slice(0, 1) === '@') {
+                                // if configured to exclude media queries
+                                if (!config.includeMediaQueries) {
+                                    //just don't add an edit
+                                } else {
+                                   edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '// ' + selectors[selectors.length-1]));
+                                }
+                            } else {
+                                // create comment edit
+                                cleanedSelectors = []
+                                for (let k=0; k < selectors.length; k++) {
+                                    if (selectors[k].slice(0, 1) === '@') {
+                                        // do nothing (do not add mediaqueries to concat selectors)
+                                    } else {
+                                        cleanedSelectors.push(selectors[k]);
+                                    }
+                                }
+                                concatSelector = cleanedSelectors.join('');
+                                edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '// ' + concatSelector));
+                            }
                         }
                     } else {
-                        // create comment edit
-                        edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '//' + selectors[selectors.length-1]));
+                        if (selectors[selectors.length-1].slice(0, 1) === '@') {
+                            // if configured to exclude media queries
+                            if (!config.includeMediaQueries) {
+                            } else {
+                                edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '// ' + selectors[selectors.length-1]));
+                            }
+                        } else {
+                            // create comment edit
+                            edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '// ' + selectors[selectors.length-1]));
+                        }
                     }
-
                     // remove last selector in stack
                     selectors.pop();
                     // push edit to array
@@ -89,12 +97,10 @@ function activate(context) {
             }
         }
     });
-
-    //context.subscriptions.push(disposable);
 }
 exports.activate = activate;
 
-// this method is called when your extension is deactivated
+// this method is called when extension is deactivated
 function deactivate() {
 }
 exports.deactivate = deactivate;
