@@ -4,15 +4,12 @@ This extension allows developers to automatically format their SCSS files to hav
 
 ## Features
 
-Press Cmd+Shift+P and then select "Comment SCSS Blocks" and voila! Your blocks will be commented.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Hooks into built in VSCode formatting. Either CMD+Shift+P and "Format Document" or set up format on save in vscode settings
 
 ## Extension Settings
 
-TODO
+conf.verboseSelectors : Concatenate nested selectors for the end-of-block comment
+conf.includeMediaQueries : Include media query comments
 
 ## Known Issues
 

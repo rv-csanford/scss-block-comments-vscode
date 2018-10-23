@@ -3,7 +3,7 @@
     "displayName": "scss-block-comments",
     "description": "Adds comments to the end of every scss block",
     "version": "0.0.1",
-    "publisher": "Charles Sanford",
+    "publisher": "charles-sanford",
     "engines": {
         "vscode": "^1.28.0"
     },
@@ -38,7 +38,7 @@
                 "conf.verboseSelectors": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Concatenate '&' nested selectors for the end-of-block comment"
+                    "description": "Concatenate nested selectors for the end-of-block comment"
                 },
                 "conf.includeMediaQueries": {
                     "type": "boolean",
