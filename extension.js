@@ -16,8 +16,8 @@ function activate(context) {
             let edit = new vscode.WorkspaceEdit();
             let range = null;
             let config = {
-                verboseSelectors: vscode.workspace.getConfiguration().get('conf.verboseSelectors'),
-                includeMediaQueries: vscode.workspace.getConfiguration().get('conf.includeMediaQueries')
+                verboseSelectors: vscode.workspace.getConfiguration().get('scssComments.verboseSelectors'),
+                includeMediaQueries: vscode.workspace.getConfiguration().get('scssComments.includeMediaQueries')
             };
 
             for (let i=0; i < lineCount; i++) {
@@ -27,6 +27,7 @@ function activate(context) {
                 if (line.indexOf('{') != -1) {
                     // trim selector and add to array of selectors
                     selector = line.slice(0, line.indexOf('{')).trim();
+
                     selectors.push(selector);
                 }
 
@@ -39,9 +40,7 @@ function activate(context) {
                         if (selectors[selectors.length-1].slice(0, 1) === '&') {
                             // strip '&' and concatenate selectors
                             cleanedSelectors = [];
-                            for (let k = 0; k < selectors.length; k++)  {
-                                cleanedSelectors.push(selectors[k].replace('&', ''));
-                            }
+                            cleanedSelectors = selectors.map(x => x.replace('&', ''));
                             concatSelector = cleanedSelectors.join('');
 
                             // create comment edit
@@ -72,6 +71,7 @@ function activate(context) {
                         if (selectors[selectors.length-1].slice(0, 1) === '@') {
                             // if configured to exclude media queries
                             if (!config.includeMediaQueries) {
+                                // do nothing
                             } else {
                                 edit.replace(document.uri, range, (line.slice(0, line.indexOf('}') + 1) + '// ' + selectors[selectors.length-1]));
                             }
@@ -88,13 +88,13 @@ function activate(context) {
             }
 
             // apply edits
-            for (let j = 0; j < edits.length; j++) {
-                vscode.workspace.applyEdit(edits[j]).then(success => {
+            edits.map(edit => {
+                vscode.workspace.applyEdit(edit).then(success => {
                     if (success) {
                     } else {
                     }
                 });
-            }
+            })
         }
     });
 }

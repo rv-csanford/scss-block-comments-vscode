@@ -2,7 +2,7 @@
     "name": "scss-block-comments",
     "displayName": "scss-block-comments",
     "description": "Adds comments to the end of every scss block",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "charles-sanford",
     "repository": "https://github.com/rv-csanford/scss-block-comments-vscode",
     "engines": {
@@ -31,17 +31,12 @@
             "type": "object",
             "title": "SCSS Blocks Config",
             "properties": {
-                "scss.format.enable":{
-                    "type": "boolean",
-                    "default": true,
-                    "description": ""
-                },
-                "conf.verboseSelectors": {
+                "scssComments.verboseSelectors": {
                     "type": "boolean",
                     "default": true,
                     "description": "Concatenate nested selectors for the end-of-block comment"
                 },
-                "conf.includeMediaQueries": {
+                "scssComments.includeMediaQueries": {
                     "type": "boolean",
                     "default": false,
                     "description": "Include media query comments"
