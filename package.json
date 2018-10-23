@@ -1,8 +1,8 @@
 {
     "name": "scss-block-comments",
-    "displayName": "scss-block-comments",
+    "displayName": "SCSS Block Comments",
     "description": "Adds comments to the end of every scss block",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "publisher": "charles-sanford",
     "repository": "https://github.com/rv-csanford/scss-block-comments-vscode",
     "engines": {

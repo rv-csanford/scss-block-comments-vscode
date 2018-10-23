@@ -1,7 +1,15 @@
-# Change Log
-All notable changes to the "scss-block-comments" extension will be documented in this file.
+### 0.0.1
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+-Initial release  
 
-## [Unreleased]
-- Initial release
+### 0.0.2
+
+-Fixed verbose selectors  
+-More concise code  
+-More specific configuration namespace  
+-Improved readme  
+
+### 0.0.3
+
+-Changelog and readme fixes  
+-Display name updated
