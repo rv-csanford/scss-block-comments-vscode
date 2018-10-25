@@ -1,21 +1,33 @@
 {
     "name": "scss-block-comments",
     "displayName": "SCSS Block Comments",
+    "icon": "images/icon.png",
+    "galleryBanner": {
+        "color": "#232323",
+        "theme": "dark"
+    },
     "description": "Adds comments to the end of every scss block",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "publisher": "charles-sanford",
     "repository": "https://github.com/rv-csanford/scss-block-comments-vscode",
     "engines": {
         "vscode": "^1.28.0"
     },
     "categories": [
-        "Other"
+        "Formatters"
     ],
     "activationEvents": [
+        "onCommand:extension.formatScssBlocks",
         "onLanguage:scss"
     ],
     "main": "./extension",
     "contributes": {
+        "commands": [
+            {
+                "command": "extension.formatScssBlocks",
+                "title": "SCSS Block Comments"
+            }
+        ],
         "languages": [
             {
                 "id": "scss",
@@ -29,8 +41,13 @@
         ],
         "configuration": {
             "type": "object",
-            "title": "SCSS Blocks Config",
+            "title": "SCSS Block Comments",
             "properties": {
+                "scssComments.formatterEnable":{
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Use SCSS Block Comments as your default SCSS formatter (will take precedence over any other formatters). Use this if you want to use format on save or just dont use other SCSS formatters"
+                },
                 "scssComments.verboseSelectors": {
                     "type": "boolean",
                     "default": true,
