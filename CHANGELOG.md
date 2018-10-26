@@ -20,8 +20,10 @@
     Added categories, banner settings and icon for VSCode Marketplace  
     Added "SCSS Block Comments" command  
     Updated readme  
-
-
-
-
+  
+### 0.0.5
+  
+    Added mixin block commenting  
+    Fixed variable declarations breaking
+    Updated readme
   

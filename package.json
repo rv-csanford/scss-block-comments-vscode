@@ -7,7 +7,7 @@
         "theme": "dark"
     },
     "description": "Adds comments to the end of every scss block",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "publisher": "charles-sanford",
     "repository": "https://github.com/rv-csanford/scss-block-comments-vscode",
     "engines": {
