@@ -7,11 +7,15 @@ This extension allows developers to automatically format their SCSS files to hav
 Press `CMD+Shift+P` then select `SCSS Block Comments`.  
   
 If you have "scssComments.formatterEnable" set to true then the extension hooks into built in VSCode formatting. Either `CMD+Shift+P` and `Format Document` or set up format on save in VSCode settings.  
+NOTE: If you enable this option, you must restart VSCode to use the native Format commands.  
+  
 ## Extension Settings
   
 "scssComments.formatterEnable" : false,
   
-    Use SCSS Block Comments as your default SCSS formatter (will take precedence over any other formatters). Use this if you want to use format on save or just dont use other SCSS formatters.
+    Use SCSS Block Comments as your default SCSS formatter (will take precedence over any other formatters).  
+    Use this if you want to use format on save or just dont use other SCSS formatters.
+
   
 "scssComments.verboseSelectors" : true,  
   

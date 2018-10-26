@@ -47,6 +47,8 @@ function activate(context) {
           } else {
             selector = ' ' + selector;
           }
+        } else {
+          selector = ' ' + selector;
         }
         selectors.push(selector);
       }
@@ -59,16 +61,18 @@ function activate(context) {
 
         // if you have verbose selectors enabled in settings
         if (config.verboseSelectors) {
-          if (selectors[selectors.length - 1].slice(0, 2) === ' @') {
+          if (selectors[selectors.length - 1].slice(0, 7) === ' @media'.toLowerCase()) {
             // if configured to exclude media queries
             if (!config.includeMediaQueries) {
               //just don't add an edit
+            } else if (selectors[selectors.length - 1].slice(0, 2) === ' $') {
+              // its a variable, get out of there!
             } else {
               edit.replace(
                 document.uri,
                 range,
                 line.slice(0, line.indexOf('}') + 1) +
-                  '// ' +
+                  ' //' +
                   selectors[selectors.length - 1]
               );
             }
@@ -76,22 +80,25 @@ function activate(context) {
             // create comment edit (handle concat with MQs)
             cleanedSelectors = [];
             selectors.map(select => {
-              if (select.slice(0, 2) === ' @') {
+              if (select.slice(0, 7) === ' @media'.toLowerCase()) {
                 // do nothing (do not add mediaqueries to concat selectors)
+              } else if (select.slice(0, 2) === ' $') {
+                // its a variable, get out of there!
               } else {
                 cleanedSelectors.push(select);
               }
             });
-            for (let k = 0; k < selectors.length; k++) {}
             concatSelector = cleanedSelectors.join('');
-            edit.replace(
-              document.uri,
-              range,
-              line.slice(0, line.indexOf('}') + 1) + ' //' + concatSelector
-            );
+            if (concatSelector.length) {
+              edit.replace(
+                document.uri,
+                range,
+                line.slice(0, line.indexOf('}') + 1) + ' //' + concatSelector
+              );
+            }
           }
         } else {
-          if (selectors[selectors.length - 1].slice(0, 2) === ' @') {
+          if (selectors[selectors.length - 1].slice(0, 7) === ' @media'.toLowerCase()) {
             // if configured to exclude media queries
             if (!config.includeMediaQueries) {
               // do nothing
@@ -104,6 +111,8 @@ function activate(context) {
                   selectors[selectors.length - 1]
               );
             }
+          } else if (selectors[selectors.length - 1].slice(0, 2) === ' $') {
+            // its a variable, get out of there!
           } else {
             // create comment edit
             edit.replace(
@@ -159,6 +168,8 @@ function activate(context) {
               } else {
                 selector = ' ' + selector;
               }
+            } else {
+              selector = ' ' + selector;
             }
             selectors.push(selector);
           }
@@ -171,16 +182,18 @@ function activate(context) {
 
             // if you have verbose selectors enabled in settings
             if (config.verboseSelectors) {
-              if (selectors[selectors.length - 1].slice(0, 2) === ' @') {
+              if (selectors[selectors.length - 1].slice(0, 7) === ' @media'.toLowerCase()) {
                 // if configured to exclude media queries
                 if (!config.includeMediaQueries) {
                   //just don't add an edit
+                } else if (selectors[selectors.length - 1].slice(0, 2) === ' $') {
+                  // its a variable, get out of there!
                 } else {
                   edit.replace(
                     document.uri,
                     range,
                     line.slice(0, line.indexOf('}') + 1) +
-                      '// ' +
+                      ' //' +
                       selectors[selectors.length - 1]
                   );
                 }
@@ -188,22 +201,25 @@ function activate(context) {
                 // create comment edit (handle concat with MQs)
                 cleanedSelectors = [];
                 selectors.map(select => {
-                  if (select.slice(0, 2) === ' @') {
+                  if (select.slice(0, 7) === ' @media') {
                     // do nothing (do not add mediaqueries to concat selectors)
+                  } else if (select.slice(0, 2) === ' $') {
+                    // its a variable, get out of there!
                   } else {
                     cleanedSelectors.push(select);
                   }
                 });
-                for (let k = 0; k < selectors.length; k++) {}
                 concatSelector = cleanedSelectors.join('');
-                edit.replace(
-                  document.uri,
-                  range,
-                  line.slice(0, line.indexOf('}') + 1) + ' //' + concatSelector
-                );
+                if (concatSelector.length) {
+                  edit.replace(
+                    document.uri,
+                    range,
+                    line.slice(0, line.indexOf('}') + 1) + ' //' + concatSelector
+                  );
+                }
               }
             } else {
-              if (selectors[selectors.length - 1].slice(0, 2) === ' @') {
+              if (selectors[selectors.length - 1].slice(0, 7) === ' @media'.toLowerCase()) {
                 // if configured to exclude media queries
                 if (!config.includeMediaQueries) {
                   // do nothing
@@ -216,6 +232,8 @@ function activate(context) {
                       selectors[selectors.length - 1]
                   );
                 }
+              } else if (selectors[selectors.length - 1].slice(0, 2) === ' $') {
+                // its a variable, get out of there!
               } else {
                 // create comment edit
                 edit.replace(
